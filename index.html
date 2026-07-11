@@ -7,17 +7,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,600;1,400;1,600&family=Cinzel:wght@300;400;600;700&family=Pinyon+Script&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Paleta Bosque Encantado: Turquesa Oscuro (Teal) y Oro Verdadero */
-            --bg-main: #00120d; /* Fondo oscuro base tras el blur */
-            --bloque-bg: rgba(255, 255, 255, 0.85);
-            --bloque-borde: rgba(0, 77, 64, 0.4);
-            --bloque-alt: rgba(235, 245, 243, 0.9);
-            --text-deep: #00251a; /* Verde/Teal muy oscuro para textos legibles */
+            /* Paleta: Azul Petróleo, Oro y Neón Azul */
+            --bg-main: #020b12; /* Fondo profundo */
+            --bloque-bg: rgba(6, 32, 48, 0.65); /* Petróleo Transparente */
+            --bloque-borde: rgba(0, 229, 255, 0.25); /* Borde sutil cyan */
+            --bloque-alt: rgba(10, 42, 60, 0.75); /* Petróleo alternativo */
+            --text-deep: #e8f4f8; /* Blanco azulado suave para legibilidad */
             --text-rose: #d4af37; /* Oro verdadero */
-            --text-turq: #004d40; /* Turquesa oscuro principal */
-            --text-muted: #00332c;
-            --btn-grad-1: #004d40;
-            --btn-grad-2: #00251a;
+            --text-turq: #81d4fa; /* Cyan claro / Azul hielo */
+            --text-muted: #8bb1b8;
+            --btn-grad-1: #005a6e;
+            --btn-grad-2: #002d38;
+            --neon-blue: #00e5ff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
@@ -30,18 +31,18 @@
             scroll-behavior: smooth;
         }
 
-        /* ====== FONDO DE IMAGEN INMERSIVO (GALERÍA 1) ====== */
+        /* ====== FONDO DE IMAGEN INMERSIVO ====== */
         #main-bg {
             position: fixed; inset: 0; z-index: 0;
             background-image: url('assets/galeria-1.jpg');
             background-size: cover; background-position: center;
-            /* La transición crea el efecto de pasar de nítido a bokeh */
+            /* La transición crea el efecto de pasar de nítido a bokeh oscuro */
             transition: filter 3s ease-in-out, transform 3s ease-in-out, opacity 3s ease-in-out;
         }
         
-        /* Cuando el contenido se activa, la imagen se difumina y oscurece */
+        /* Cuando el contenido se activa, la imagen se difumina y oscurece profundamente */
         body.content-active #main-bg {
-            filter: blur(15px) brightness(0.35);
+            filter: blur(20px) brightness(0.25);
             transform: scale(1.08);
         }
 
@@ -49,14 +50,14 @@
         .anim-fade-up {
             opacity: 0;
             transform: translateY(35px);
-            transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
         .anim-fade-up.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* ====== SOBRE HORIZONTAL (SPLIT DOORS) ====== */
+        /* ====== SOBRE HORIZONTAL ====== */
         #envelope-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 2000; display: flex; cursor: pointer;
@@ -67,7 +68,7 @@
         .env-half {
             width: 50vw; height: 100%; position: relative; overflow: hidden;
             transition: transform 1.8s cubic-bezier(0.77, 0, 0.175, 1);
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            box-shadow: 0 0 30px rgba(0,0,0,0.9);
             z-index: 2;
         }
         
@@ -84,31 +85,37 @@
         #envelope-screen.open .env-half.left { transform: translateX(-100%); }
         #envelope-screen.open .env-half.right { transform: translateX(100%); }
 
-        /* ====== ORBES Y LUCES CÁLIDAS (BOKEH TIPO BOSQUE) ====== */
-        .bokeh-orb {
-            position: absolute; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(212, 175, 55, 0.4) 40%, transparent 80%);
-            box-shadow: 0 0 15px rgba(212,175,55,0.2);
-            pointer-events: none; opacity: 0; z-index: 1;
-            animation: float-bokeh infinite ease-in-out alternate;
+        /* ====== ESTRELLAS NEÓN AZUL ====== */
+        #neon-stars-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; pointer-events: none; z-index: 1; opacity: 0;
+            transition: opacity 2s ease-in;
         }
-        @keyframes float-bokeh {
-            0% { transform: translateY(0) scale(0.8); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: translateY(-300px) scale(1.5); opacity: 0; }
+        body.content-active #neon-stars-container { opacity: 1; }
+
+        .neon-star {
+            position: absolute;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--neon-blue), 0 0 15px var(--neon-blue);
+            pointer-events: none;
+            animation: neonTwinkle infinite alternate ease-in-out;
+        }
+        @keyframes neonTwinkle {
+            0% { transform: scale(0.5); opacity: 0.2; box-shadow: 0 0 5px var(--neon-blue); }
+            100% { transform: scale(1.5); opacity: 0.9; box-shadow: 0 0 12px var(--neon-blue), 0 0 25px var(--neon-blue); }
         }
 
-        /* ====== DECORACIONES: FOLLAJE VERDE (SVG INLINE) ====== */
+        /* ====== DECORACIONES: FOLLAJE PNG ====== */
         .decor-img {
-            position: absolute; pointer-events: none; z-index: 5; opacity: 0.9;
-            filter: drop-shadow(0 8px 15px rgba(0, 20, 15, 0.4));
+            position: absolute; pointer-events: none; z-index: 5; opacity: 0.85;
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6));
         }
         .decor-foliage { 
             width: 140px; height: auto; 
             animation: sway-anim 7s ease-in-out infinite alternate; 
             transform-origin: top center; 
         }
-        
         @keyframes sway-anim {
             0% { transform: rotate(-5deg); }
             100% { transform: rotate(5deg); }
@@ -127,111 +134,102 @@
         }
         body.content-active #main-invitation { display: flex; opacity: 1; transform: translateY(0); }
 
-        /* ====== FRAME DE CRISTAL ====== */
+        /* ====== FRAME DE CRISTAL (GLASSMORPHISM PETRÓLEO) ====== */
         .invitation-frame {
-            max-width:500px; width:100%; border:1px solid rgba(212,175,55,0.5);
+            max-width:500px; width:100%; border:1px solid rgba(212,175,55,0.4);
             padding:60px 38px 50px; text-align:center; position:relative;
-            background: rgba(255, 255, 255, 0.85);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.7) inset;
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-radius:4px; overflow:visible;
-        }
-
-        .frame-sparkle { position:absolute;pointer-events:none;z-index:10; }
-        .frame-sparkle svg { animation:sparkle-pulse 3s ease-in-out infinite; }
-        .frame-sparkle:nth-child(1) { top:-12px;left:-12px; }
-        .frame-sparkle:nth-child(2) { top:-12px;right:-12px;animation-delay:0.8s; }
-        .frame-sparkle:nth-child(3) { bottom:-12px;left:-12px;animation-delay:1.6s; }
-        .frame-sparkle:nth-child(4) { bottom:-12px;right:-12px;animation-delay:2.4s; }
-        
-        @keyframes sparkle-pulse {
-            0%,100%{opacity:0.2;transform:scale(0.8) rotate(0deg);}
-            50%{opacity:1;transform:scale(1.15) rotate(25deg);}
+            background: rgba(3, 19, 28, 0.65); /* Azul Petróleo muy oscuro y transparente */
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 229, 255, 0.1) inset;
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            border-radius:6px; overflow:visible;
         }
 
         /* ====== TIPOGRAFÍA ====== */
         .section-heading, .section-heading-sm {
             font-family: 'Bodoni Moda', serif; font-style: italic; font-weight: 600;
-            color: var(--text-turq); text-transform: none; line-height: 1.3;
+            color: var(--text-rose); text-transform: none; line-height: 1.3;
         }
-        .section-heading { font-size: 28px; letter-spacing: 1px; margin-bottom: 16px; text-shadow: 0 2px 4px rgba(0, 77, 64, 0.1);}
+        .section-heading { font-size: 28px; letter-spacing: 1px; margin-bottom: 16px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .section-heading-sm { font-size: 22px; letter-spacing: 1px; margin-bottom: 12px; }
-        .section-tag { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 16px; letter-spacing: 2px; color: var(--text-rose); font-weight: 500; margin-bottom: 14px; }
+        .section-tag { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 16px; letter-spacing: 2px; color: var(--text-turq); font-weight: 500; margin-bottom: 14px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         
         .main-title { 
-            font-family:'Pinyon Script',cursive;font-size:98px;color: var(--text-deep); 
+            font-family:'Pinyon Script',cursive;font-size:98px;color: #ffffff; 
+            text-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 15px rgba(0, 229, 255, 0.2);
             margin-bottom:10px; line-height:1;
             transform: translateX(-10px); padding-right: 10px; text-align: center;
         }
         
-        .phrase { font-family:'EB Garamond','Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--text-deep);line-height:1.7;margin-bottom:35px;padding:0 10px;font-weight:400; }
-        .family-names { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;font-style:italic;color:var(--text-turq);line-height:1.6;margin-top:6px; }
+        .phrase { font-family:'EB Garamond','Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--text-deep);line-height:1.7;margin-bottom:35px;padding:0 10px;font-weight:400; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .family-names { font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;font-style:italic;color:var(--text-turq);line-height:1.6;margin-top:6px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
         .info-label { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 11px; letter-spacing: 3px; color: var(--text-rose); text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
         .info-block { margin-bottom:28px; position: relative; }
 
         .divider-ornate { display:flex;align-items:center;justify-content:center;gap:8px;margin:35px auto; }
-        .divider-ornate::before,.divider-ornate::after { content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(212,175,55, 0.7)); }
-        .divider-ornate::after { background:linear-gradient(to left,transparent,rgba(212,175,55, 0.7)); }
-        .divider-ornate-diamond { width:6px;height:6px;background:var(--text-turq);transform:rotate(45deg);flex-shrink:0; box-shadow: 0 0 5px rgba(0,77,64,0.4); }
+        .divider-ornate::before,.divider-ornate::after { content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(212,175,55, 0.5)); }
+        .divider-ornate::after { background:linear-gradient(to left,transparent,rgba(212,175,55, 0.5)); }
+        .divider-ornate-diamond { width:6px;height:6px;background:var(--text-turq);transform:rotate(45deg);flex-shrink:0; box-shadow: 0 0 8px var(--neon-blue); }
 
         /* ====== COUNTDOWN ====== */
         .countdown-grid { display:flex;justify-content:center;gap:10px;margin:18px auto 6px auto;max-width:340px; }
-        .countdown-item { flex:1;background:rgba(255,255,255,0.9);border:1px solid rgba(212,175,55,0.5);padding:14px 5px;border-radius:6px;backdrop-filter:blur(6px); box-shadow: 0 6px 15px rgba(0, 37, 26, 0.1); }
-        .countdown-number { font-family:'Cinzel',serif;font-size:26px;font-weight:700;color:var(--text-turq);display:block; text-shadow: 0 1px 2px rgba(0,0,0,0.05);}
-        .countdown-label { font-family:'Montserrat',sans-serif;font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700; }
+        .countdown-item { flex:1;background:var(--bloque-bg);border:1px solid rgba(212,175,55,0.3);padding:14px 5px;border-radius:6px;backdrop-filter:blur(10px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); }
+        .countdown-number { font-family:'Cinzel',serif;font-size:26px;font-weight:700;color:var(--text-turq);display:block; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
+        .countdown-label { font-family:'Montserrat',sans-serif;font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-deep);font-weight:600; }
 
         /* ====== BLOQUES VIDRIO ====== */
         .bloque-vidrio, .bloque-vidrio-alt {
-            border-radius:10px; padding:35px 26px; margin:0 -38px; position:relative; box-shadow: 0 10px 30px rgba(0, 37, 26, 0.08);
+            border-radius:10px; padding:35px 26px; margin:0 -38px; position:relative; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
         .bloque-vidrio { background:var(--bloque-bg); border:1px solid var(--bloque-borde); }
-        .bloque-vidrio-alt { background:var(--bloque-alt); border:1px solid rgba(212,175,55,0.4); }
+        .bloque-vidrio-alt { background:var(--bloque-alt); border:1px solid rgba(212,175,55,0.3); }
 
         /* ====== TICKET / PASE DE ACCESO ====== */
         .ticket-pass {
             background: linear-gradient(135deg, var(--btn-grad-1), var(--btn-grad-2));
-            border-radius: 12px; padding: 6px; box-shadow: 0 15px 35px rgba(0, 37, 26, 0.4);
-            position: relative; overflow: hidden; margin: 0 auto;
+            border-radius: 12px; padding: 6px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            position: relative; overflow: hidden; margin: 0 auto; border: 1px solid rgba(0, 229, 255, 0.3);
         }
         .ticket-pass::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at top right, rgba(255,255,255,0.15), transparent 60%);
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.1), transparent 60%);
             pointer-events: none;
         }
         .ticket-inner {
             border: 2px dashed rgba(212,175,55,0.6); border-radius: 8px; padding: 35px 20px;
-            background: rgba(0,0,0,0.25); position: relative; text-align: center;
+            background: rgba(0,0,0,0.4); position: relative; text-align: center;
         }
         
         /* ====== CALENDARIO ===== */
-        .calendar-widget{ margin-top:18px; background:rgba(255,255,255,0.9); border:1px solid rgba(0, 77, 64, 0.3); border-radius:18px; overflow:hidden; box-shadow: 0 8px 30px rgba(0, 37, 26, 0.1); }
+        .calendar-widget{ margin-top:18px; background:rgba(4, 25, 36, 0.6); border:1px solid rgba(0, 229, 255, 0.2); border-radius:18px; overflow:hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
         .calendar-header{ padding:18px 20px 14px; text-align:center; color: var(--text-deep); position:relative; }
-        .calendar-header::after{ content:''; position:absolute; left:0; bottom:0; width:100%; height:1px; background:rgba(0, 77, 64, 0.2); }
+        .calendar-header::after{ content:''; position:absolute; left:0; bottom:0; width:100%; height:1px; background:rgba(212,175,55,0.3); }
         .calendar-year{ font-family:'Cinzel',serif; font-size:11px; letter-spacing:5px; text-transform:uppercase; opacity:0.9; font-weight: 700;}
-        .calendar-month{ margin-top:5px; font-family: 'Pinyon Script', cursive; font-size:38px; font-weight:400; letter-spacing:1px; color:var(--text-turq); }
+        .calendar-month{ margin-top:5px; font-family: 'Pinyon Script', cursive; font-size:42px; font-weight:400; letter-spacing:1px; color:var(--text-rose); }
         .calendar-body{ padding:18px 16px 20px; }
         .calendar-days-header{ display:grid; grid-template-columns:repeat(7,1fr); margin-bottom:12px; }
-        .calendar-day-name{ text-align:center; font-family:'Montserrat', sans-serif; font-size:9px; letter-spacing:1.5px; color:var(--text-muted); text-transform:uppercase; font-weight:700; }
+        .calendar-day-name{ text-align:center; font-family:'Montserrat', sans-serif; font-size:9px; letter-spacing:1.5px; color:var(--text-turq); text-transform:uppercase; font-weight:700; }
         .calendar-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
         .cal-day{ width:34px; height:34px; margin:auto; display:flex; align-items:center; justify-content:center; font-family: 'Cormorant Garamond', serif; font-size:18px; color:var(--text-deep); position:relative; border-radius:50%; transition:all .3s ease; font-weight:600;}
         .cal-day.empty{ opacity:0; }
-        .cal-day.highlight{ border: 1px solid var(--text-rose); color:#fff; font-weight:700; background:var(--text-turq); box-shadow: 0 4px 15px rgba(0, 77, 64, 0.4);}
+        .cal-day.highlight{ border: 1px solid var(--neon-blue); color:#000; font-weight:700; background:var(--text-rose); box-shadow: 0 0 15px rgba(212,175,55, 0.4);}
         
         .btn-accion {
-            margin-top:18px; width:100%; border:1px solid rgba(212,175,55,0.6); border-radius:14px; padding:15px 18px;
-            background: rgba(255,255,255,0.9); color:var(--text-turq); display:flex; align-items:center; justify-content:center; gap:10px;
-            cursor:pointer; transition:.35s ease; font-family:'Cinzel',serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; font-weight:700; box-shadow: 0 6px 15px rgba(0, 37, 26, 0.15);
+            margin-top:18px; width:100%; border:1px solid rgba(212,175,55,0.5); border-radius:14px; padding:15px 18px;
+            background: rgba(10, 42, 60, 0.8); color:var(--text-deep); display:flex; align-items:center; justify-content:center; gap:10px;
+            cursor:pointer; transition:.35s ease; font-family:'Cinzel',serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; font-weight:700; box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
-        .btn-accion:hover { transform:translateY(-2px); background: #ffffff; box-shadow: 0 8px 25px rgba(0, 37, 26, 0.2); border-color:var(--text-rose); }
-        .btn-accion svg { width:18px; height:18px; fill:var(--text-turq); flex-shrink:0; }
+        .btn-accion:hover { transform:translateY(-2px); background: #0a2a3c; box-shadow: 0 10px 25px rgba(0,0,0,0.6); border-color:var(--neon-blue); color:#fff; }
+        .btn-accion svg { width:18px; height:18px; fill:var(--text-rose); flex-shrink:0; transition:.3s ease;}
+        .btn-accion:hover svg { fill: var(--neon-blue); }
 
-        .map-wrapper { width:100%;height:200px;border-radius:8px;overflow:hidden;border:1px solid rgba(0, 77, 64, 0.4); margin-bottom: 15px; box-shadow: 0 6px 20px rgba(0, 37, 26, 0.15); }
+        .map-wrapper { width:100%;height:220px;border-radius:8px;overflow:hidden;border:1px solid rgba(212,175,55,0.4); margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
 
-        /* ====== ITINERARIO INTERCALADO ====== */
+        /* ====== ITINERARIO ====== */
         .itinerario-timeline { display:flex; flex-direction:column; position:relative; margin-top:35px; }
         .itinerario-timeline::before {
             content:''; position:absolute; left:50%; top:0; bottom:0; width:2px;
-            background:linear-gradient(to bottom, transparent, rgba(212,175,55,0.7) 10%, rgba(212,175,55,0.7) 90%, transparent);
+            background:linear-gradient(to bottom, transparent, rgba(0,229,255,0.5) 10%, rgba(0,229,255,0.5) 90%, transparent);
             transform:translateX(-50%);
         }
         .itin-row { display:flex; width:100%; align-items:center; margin-bottom:40px; position:relative; }
@@ -241,65 +239,64 @@
         .itin-left .itin-half:first-child { text-align:right; align-items:flex-end; padding-right:15px; }
         .itin-right .itin-half:first-child { text-align:left; align-items:flex-start; padding-left:15px; }
         
-        .itin-node { width:56px; height:56px; background:#fff; border:2px solid var(--text-rose); border-radius:50%; display:flex; justify-content:center; align-items:center; z-index:2; box-shadow:0 0 20px rgba(212,175,55,0.35); }
-        .itin-node svg { width:28px; height:28px; fill:var(--text-turq); }
+        .itin-node { width:56px; height:56px; background: rgba(3, 19, 28, 0.9); border:2px solid var(--text-rose); border-radius:50%; display:flex; justify-content:center; align-items:center; z-index:2; box-shadow:0 0 20px rgba(212,175,55,0.3); backdrop-filter:blur(5px); }
+        .itin-node svg { width:28px; height:28px; fill:var(--text-rose); }
         
-        .itin-hora { font-family:'Cinzel',serif; font-size:12px; font-weight:700; letter-spacing:1px; color:var(--text-rose); margin-bottom:5px; }
-        .itin-evento-nombre { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:22px; font-weight:600; color:var(--text-deep); line-height:1.1; }
+        .itin-hora { font-family:'Cinzel',serif; font-size:12px; font-weight:700; letter-spacing:1px; color:var(--text-turq); margin-bottom:5px; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
+        .itin-evento-nombre { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:22px; font-weight:600; color:#fff; line-height:1.1; text-shadow: 0 2px 5px rgba(0,0,0,0.6); }
 
         /* ====== MESA DE REGALOS ====== */
         .regalo-container { text-align: center; margin-top: 15px; }
-        .regalo-icon { width: 65px; height: 65px; margin: 0 auto 15px auto; display: block; stroke: var(--text-rose); fill: none; filter: drop-shadow(0 4px 6px rgba(212,175,55,0.3)); }
+        .regalo-icon { width: 65px; height: 65px; margin: 0 auto 15px auto; display: block; stroke: var(--text-rose); fill: none; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
         .regalo-pill {
-            background: linear-gradient(135deg, var(--text-turq), var(--text-deep)); color: #fff;
+            background: linear-gradient(135deg, var(--btn-grad-1), var(--btn-grad-2)); color: #fff;
             padding: 14px 40px; border-radius: 35px;
             font-family: 'Pinyon Script', cursive; font-size: 32px; line-height: 1;
-            display: inline-block; box-shadow: 0 10px 25px rgba(0, 37, 26, 0.3);
-            border: 1px solid rgba(212,175,55,0.5); margin-bottom: 18px;
+            display: inline-block; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(212,175,55,0.4); margin-bottom: 18px;
         }
-        .regalo-subtext { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; color: var(--text-deep); padding: 0 10px; line-height: 1.4; margin-bottom: 25px;}
+        .regalo-subtext { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; color: var(--text-deep); padding: 0 10px; line-height: 1.4; margin-bottom: 25px; text-shadow: 0 2px 4px rgba(0,0,0,0.6);}
 
         /* ====== CONFIRMACIÓN & FORMS ====== */
-        .rsvp-intro { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--text-deep);line-height:1.6;margin-bottom:25px; }
-        .rsvp-input-label { font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--text-deep);text-transform:uppercase;font-weight:700;display:block;margin-bottom:8px; text-align:left;}
+        .rsvp-intro { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--text-deep);line-height:1.6;margin-bottom:25px; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
+        .rsvp-input-label { font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--text-turq);text-transform:uppercase;font-weight:700;display:block;margin-bottom:8px; text-align:left;}
         .rsvp-input {
             width:100%;padding:14px 18px;font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;
-            color:var(--text-deep);background:rgba(255,255,255,0.95);border:1px solid rgba(0, 77, 64, 0.4);
+            color:#fff; background:rgba(0,0,0,0.4); border:1px solid rgba(212,175,55,0.4);
             border-radius:6px;outline:none;transition:border-color 0.3s,box-shadow 0.3s;
         }
-        select.rsvp-input { cursor: pointer; }
-        .rsvp-input:focus { border-color:var(--text-turq);box-shadow:0 0 0 3px rgba(0, 77, 64, 0.15); }
+        .rsvp-input::placeholder { color: rgba(255,255,255,0.5); }
+        select.rsvp-input option { background: #061b26; color: #fff; }
+        .rsvp-input:focus { border-color:var(--neon-blue);box-shadow:0 0 0 3px rgba(0, 229, 255, 0.2); }
         .rsvp-input-wrap { margin-bottom:20px; text-align: left; }
         
         .btn-confirmar {
             display:inline-flex;align-items:center;justify-content:center;gap:12px;width:100%;
-            padding:18px 24px;background:linear-gradient(135deg,var(--btn-grad-1),var(--btn-grad-2));
-            color:#fff;border:none;font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;
+            padding:18px 24px;background:linear-gradient(135deg, var(--text-rose), #9e7f1e);
+            color:#000; border:none;font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;
             text-transform:uppercase;cursor:pointer;font-weight:700;border-radius:8px;
-            box-shadow:0 10px 25px rgba(0, 37, 26, 0.4);transition:all 0.4s ease;
-            position:relative;overflow:hidden; border: 1px solid rgba(212,175,55,0.4);
+            box-shadow:0 10px 25px rgba(0, 0, 0, 0.6);transition:all 0.4s ease;
+            position:relative;overflow:hidden; border: 1px solid rgba(255,255,255,0.3);
         }
-        .btn-confirmar::before { content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left 0.5s; }
+        .btn-confirmar::before { content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);transition:left 0.5s; }
         .btn-confirmar:hover::before { left:100%; }
-        .btn-confirmar:hover { box-shadow:0 12px 30px rgba(0, 37, 26, 0.5);transform:translateY(-2px); border-color:rgba(212,175,55,0.8); }
-        .btn-confirmar svg { width:18px;height:18px;fill:#fff;flex-shrink:0; }
+        .btn-confirmar:hover { box-shadow:0 12px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212,175,55,0.5); transform:translateY(-2px); }
+        .btn-confirmar svg { width:18px;height:18px;fill:#000;flex-shrink:0; }
 
         /* ====== GLITTER Y MUSICA ====== */
-        #glitter-canvas { position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:3;opacity:0;transition:opacity 0.8s; }
-        #glitter-canvas.visible { opacity:1; }
-
         #music-control-btn {
             position:fixed;bottom:25px;right:25px;width:55px;height:55px;border-radius:50%;
-            background:rgba(255,255,255,0.95);border:1px solid rgba(212,175,55,0.6);
+            background:rgba(3, 19, 28, 0.8); border:1px solid rgba(212,175,55,0.6);
             display:flex;justify-content:center;align-items:center;cursor:pointer;z-index:999;
-            box-shadow:0 8px 25px rgba(0, 37, 26, 0.3);opacity:0;visibility:hidden;
-            transition:opacity 0.5s,visibility 0.5s,transform 0.3s;backdrop-filter:blur(8px);
+            box-shadow:0 8px 25px rgba(0, 0, 0, 0.6);opacity:0;visibility:hidden;
+            transition:opacity 0.5s,visibility 0.5s,transform 0.3s,box-shadow 0.3s; backdrop-filter:blur(8px);
         }
-        #music-control-btn:hover { transform:scale(1.1); }
+        #music-control-btn:hover { transform:scale(1.1); box-shadow: 0 0 15px var(--neon-blue); border-color: var(--neon-blue); }
         #music-control-btn.visible { opacity:1;visibility:visible; }
-        #music-control-btn svg { width:24px;height:24px; fill:var(--text-turq); }
+        #music-control-btn svg { width:24px;height:24px; fill:var(--text-rose); transition: .3s ease; }
+        #music-control-btn:hover svg { fill: var(--neon-blue); }
 
-        .invitation-footer { font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:var(--text-turq);margin-top:24px;font-weight:700;text-transform:uppercase; }
+        .invitation-footer { font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:var(--text-turq);margin-top:24px;font-weight:700;text-transform:uppercase; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
 
         @media(max-width:400px){
             .main-title{font-size:82px}
@@ -309,24 +306,7 @@
     </style>
 </head>
 <body>
-    <svg style="display:none;">
-        <defs>
-            <g id="foliage-branch">
-                <path d="M10,0 Q30,50 0,100 T20,200" fill="none" stroke="#00251a" stroke-width="2"/>
-                <path d="M15,20 C35,5 50,25 25,40 C20,30 15,25 15,20 Z" fill="#004d40"/>
-                <path d="M8,40 C-15,30 -25,55 -5,65 C0,55 5,45 8,40 Z" fill="#00332c"/>
-                <path d="M4,70 C25,60 40,85 15,100 C10,90 5,80 4,70 Z" fill="#004d40"/>
-                <path d="M-1,105 C-25,100 -30,130 -10,140 C-5,130 -3,120 -1,105 Z" fill="#00332c"/>
-                <path d="M10,140 C35,135 45,165 20,180 C15,170 12,150 10,140 Z" fill="#004d40"/>
-                <path d="M18,185 C-5,190 -10,210 5,220 C10,210 15,200 18,185 Z" fill="#00332c"/>
-                <path d="M10,50 C25,40 30,60 15,65 C12,55 10,50 10,50 Z" fill="#d4af37"/>
-                <path d="M0,120 C-15,115 -20,135 -5,140 C-2,130 0,120 0,120 Z" fill="#d4af37"/>
-            </g>
-        </defs>
-    </svg>
-
     <audio id="song" src="assets/song.mp3" loop preload="auto"></audio>
-    <canvas id="glitter-canvas"></canvas>
     
     <button id="music-control-btn" onclick="toggleMusic()" aria-label="Control de música">
         <svg id="music-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
@@ -343,17 +323,13 @@
         </div>
     </div>
 
-    <main id="main-invitation">
-        <div id="lanterns-container" style="position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:1;"></div>
+    <div id="neon-stars-container"></div>
 
+    <main id="main-invitation">
         <div class="invitation-frame" style="z-index:3;">
             
-            <svg class="decor-img decor-foliage anim-fade-up" style="top:-30px; right:-25px; transform: rotate(15deg);" viewBox="-30 0 70 230">
-                <use href="#foliage-branch"/>
-            </svg>
-            <svg class="decor-img decor-foliage anim-fade-up" style="top:2%; left:-25px; animation-name: sway-anim-rev;" viewBox="-30 0 70 230">
-                <use href="#foliage-branch"/>
-            </svg>
+            <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-30px; right:-25px; transform: rotate(15deg);" alt="">
+            <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:2%; left:-25px; animation-name: sway-anim-rev;" alt="">
 
             <div class="frame-sparkle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.95"/></svg></div>
             <div class="frame-sparkle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.85"/></svg></div>
@@ -381,13 +357,11 @@
             <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
 
             <div class="bloque-vidrio anim-fade-up">
-                <svg class="decor-img decor-foliage" style="bottom:-25px; left:-35px; transform: rotate(-25deg); width:110px;" viewBox="-30 0 70 230">
-                    <use href="#foliage-branch"/>
-                </svg>
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="bottom:-25px; left:-35px; transform: rotate(-25deg); width:110px;" alt="">
 
                 <div class="section-heading anim-fade-up">Fecha</div>
-                <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:28px;font-weight:700;color:var(--text-deep);letter-spacing:3px;">09 · OCT · 2026</div>
-                <div class="anim-fade-up" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--text-muted);margin-top:5px;font-weight:600;">Viernes</div>
+                <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:28px;font-weight:700;color:var(--text-rose);letter-spacing:3px; text-shadow: 0 2px 5px rgba(0,0,0,0.8);">09 · OCT · 2026</div>
+                <div class="anim-fade-up" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--text-turq);margin-top:5px;font-weight:600; text-shadow: 0 2px 4px rgba(0,0,0,0.6);">Viernes</div>
                 
                 <div class="calendar-widget anim-fade-up">
                     <div class="calendar-header">2026 <div class="calendar-month">Octubre</div></div>
@@ -412,20 +386,18 @@
             </div>
 
             <div class="info-block anim-fade-up" style="margin-top: 40px; position:relative;">
-                <svg class="decor-img decor-foliage" style="top:-35px; right:-25px; animation-name: sway-anim-rev; width:100px;" viewBox="-30 0 70 230">
-                    <use href="#foliage-branch"/>
-                </svg>
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-35px; right:-25px; animation-name: sway-anim-rev; width:100px;" alt="">
 
                 <div class="section-heading anim-fade-up" style="margin-bottom: 25px;">Ubicación</div>
                 
                 <div class="ubicacion-sencilla">
-                    <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:14px;color:var(--text-turq);margin-bottom:5px;letter-spacing:2px;font-weight:700;text-transform:uppercase;">Quinta los Agapantos</div>
-                    <div class="anim-fade-up" style="font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--text-muted);margin-bottom:15px;font-weight:600;">Ceremonia de Agradecimiento y Recepción</div>
+                    <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:14px;color:var(--text-rose);margin-bottom:5px;letter-spacing:2px;font-weight:700;text-transform:uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Quinta los Agapantos</div>
+                    <div class="anim-fade-up" style="font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--text-deep);margin-bottom:15px;font-weight:600; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Ceremonia de Agradecimiento y Recepción</div>
                     
                     <div class="map-wrapper anim-fade-up">
-                        <iframe src="https://maps.app.goo.gl/Jon1i9XTZVVGRkPG8" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3735.6479234724975!2d-103.47947549999999!3d20.5615815!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428ab34abadeeef%3A0xd1064427b36cb43e!2sQuinta%20Los%20Agapantos!5e0!3m2!1ses-419!2smx!4v1783735969509!5m2!1ses-419!2smx" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
                     </div>
-                    <a href="https://maps.app.goo.gl/Jon1i9XTZVVGRkPG8" target="_blank" style="text-decoration:none;" class="anim-fade-up">
+                    <a href="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3735.6479234724975!2d-103.47947549999999!3d20.5615815!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428ab34abadeeef%3A0xd1064427b36cb43e!2sQuinta%20Los%20Agapantos!5e0!3m2!1ses-419!2smx!4v1783735969509!5m2!1ses-419!2smx" target="_blank" style="text-decoration:none;" class="anim-fade-up">
                         <button class="btn-accion">Ver en Google Maps</button>
                     </a>
                 </div>
@@ -434,19 +406,17 @@
             <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
 
             <div class="bloque-vidrio anim-fade-up">
-                <svg class="decor-img decor-foliage" style="top:30%; right:-40px; transform: rotate(20deg); width:110px;" viewBox="-30 0 70 230">
-                    <use href="#foliage-branch"/>
-                </svg>
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:30%; right:-40px; transform: rotate(20deg); width:110px;" alt="">
 
                 <div class="section-heading anim-fade-up">Itinerario</div>
                 <div class="itinerario-timeline" id="itinerario">
                     
                     <div class="itin-row itin-left anim-fade-up">
                         <div class="itin-half">
-                            <span class="itin-hora">8:00 P.M.</span>
-                            <span class="itin-evento-nombre">Ceremonia de Agradecimiento</span>
+                            <span class="itin-hora anim-fade-up">8:00 P.M.</span>
+                            <span class="itin-evento-nombre anim-fade-up">Ceremonia de Agradecimiento</span>
                         </div>
-                        <div class="itin-node">
+                        <div class="itin-node anim-fade-up">
                             <svg viewBox="0 0 24 24"><path d="M12 2L4 8v14h16V8L12 2zm0 3.2L17.5 9v11h-11V9L12 5.2zM11 11h2v3h3v2h-3v5h-2v-5H8v-2h3v-3z"/></svg>
                         </div>
                         <div class="itin-half"></div>
@@ -454,10 +424,10 @@
                     
                     <div class="itin-row itin-right anim-fade-up">
                         <div class="itin-half">
-                            <span class="itin-hora">8:30 P.M.</span>
-                            <span class="itin-evento-nombre">Cóctel de Bienvenida</span>
+                            <span class="itin-hora anim-fade-up">8:30 P.M.</span>
+                            <span class="itin-evento-nombre anim-fade-up">Cóctel de Bienvenida</span>
                         </div>
-                        <div class="itin-node">
+                        <div class="itin-node anim-fade-up">
                             <svg viewBox="0 0 24 24"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg>
                         </div>
                         <div class="itin-half"></div>
@@ -465,10 +435,10 @@
                     
                     <div class="itin-row itin-left anim-fade-up">
                         <div class="itin-half">
-                            <span class="itin-hora">9:00 P.M.</span>
-                            <span class="itin-evento-nombre">Ingreso de Invitados</span>
+                            <span class="itin-hora anim-fade-up">9:00 P.M.</span>
+                            <span class="itin-evento-nombre anim-fade-up">Ingreso de Invitados</span>
                         </div>
-                        <div class="itin-node">
+                        <div class="itin-node anim-fade-up">
                             <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                         </div>
                         <div class="itin-half"></div>
@@ -476,10 +446,10 @@
                     
                     <div class="itin-row itin-right anim-fade-up">
                         <div class="itin-half">
-                            <span class="itin-hora">9:15 P.M.</span>
-                            <span class="itin-evento-nombre" style="font-size:25px; color:var(--text-rose);">Entrada Quinceañera</span>
+                            <span class="itin-hora anim-fade-up">9:15 P.M.</span>
+                            <span class="itin-evento-nombre anim-fade-up" style="font-size:25px; color:var(--text-rose);">Entrada Quinceañera</span>
                         </div>
-                        <div class="itin-node">
+                        <div class="itin-node anim-fade-up">
                             <svg viewBox="0 0 24 24"><path d="M19 16V6l-3.5 4.5L12 3 8.5 10.5 5 6v10h14zm-14 2h14v2H5v-2z"/></svg>
                         </div>
                         <div class="itin-half"></div>
@@ -487,10 +457,10 @@
                     
                     <div class="itin-row itin-left anim-fade-up">
                         <div class="itin-half">
-                            <span class="itin-hora">9:30 P.M.</span>
-                            <span class="itin-evento-nombre">Cena</span>
+                            <span class="itin-hora anim-fade-up">9:30 P.M.</span>
+                            <span class="itin-evento-nombre anim-fade-up">Cena</span>
                         </div>
-                        <div class="itin-node">
+                        <div class="itin-node anim-fade-up">
                             <svg viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 6.58 4 11v1h16v-1c0-4.42-3.58-8-8-8zm-8 10v2h16v-2H4z"/></svg>
                         </div>
                         <div class="itin-half"></div>
@@ -498,10 +468,10 @@
                     
                     <div class="itin-row itin-right anim-fade-up">
                         <div class="itin-half">
-                            <span class="itin-hora">10:30 P.M.</span>
-                            <span class="itin-evento-nombre" style="font-size:26px; color:var(--text-rose);">Vals</span>
+                            <span class="itin-hora anim-fade-up">10:30 P.M.</span>
+                            <span class="itin-evento-nombre anim-fade-up" style="font-size:26px; color:var(--text-rose);">Vals</span>
                         </div>
-                        <div class="itin-node">
+                        <div class="itin-node anim-fade-up">
                             <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                         </div>
                         <div class="itin-half"></div>
@@ -509,10 +479,10 @@
                     
                     <div class="itin-row itin-left anim-fade-up">
                         <div class="itin-half">
-                            <span class="itin-hora">11:00 P.M.</span>
-                            <span class="itin-evento-nombre">Baile</span>
+                            <span class="itin-hora anim-fade-up">11:00 P.M.</span>
+                            <span class="itin-evento-nombre anim-fade-up">Baile</span>
                         </div>
-                        <div class="itin-node">
+                        <div class="itin-node anim-fade-up">
                             <svg viewBox="0 0 24 24"><path d="M12 2.5l2.25 6.5h6.75l-5.5 4 2.25 6.5L12 15.25l-5.75 4.25 2.25-6.5-5.5-4h6.75L12 2.5z"/></svg>
                         </div>
                         <div class="itin-half"></div>
@@ -520,10 +490,10 @@
                     
                     <div class="itin-row itin-right anim-fade-up">
                         <div class="itin-half">
-                            <span class="itin-hora">2:00 A.M.</span>
-                            <span class="itin-evento-nombre">Fin del Evento</span>
+                            <span class="itin-hora anim-fade-up">2:00 A.M.</span>
+                            <span class="itin-evento-nombre anim-fade-up">Fin del Evento</span>
                         </div>
-                        <div class="itin-node">
+                        <div class="itin-node anim-fade-up">
                             <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c4.97 0 9-4.03 9-9 0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 1.96 5.403 5.403 0 01-5.4-5.4c0-1.59.69-3.02 1.78-4A8.914 8.914 0 0012 3z"/></svg>
                         </div>
                         <div class="itin-half"></div>
@@ -533,13 +503,11 @@
             </div>
 
             <div class="bloque-vidrio-alt anim-fade-up" style="margin-top: 40px;">
-                <svg class="decor-img decor-foliage" style="bottom:-20px; left:-25px; width: 100px;" viewBox="-30 0 70 230">
-                    <use href="#foliage-branch"/>
-                </svg>
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="bottom:-20px; left:-25px; width: 100px;" alt="">
 
                 <div class="section-heading anim-fade-up">Código de Vestimenta</div>
                 
-                <div class="anim-fade-up" style="margin: 25px auto 15px auto; max-width: 280px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(212,175,55,0.4); box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                <div class="anim-fade-up" style="margin: 25px auto 15px auto; max-width: 280px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(212,175,55,0.4); box-shadow: 0 8px 25px rgba(0,0,0,0.5);">
                     <img src="assets/vestimenta.jpg" alt="Código de Vestimenta" style="width: 100%; display: block;">
                 </div>
             </div>
@@ -547,11 +515,9 @@
             <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
 
             <div class="bloque-vidrio anim-fade-up" style="padding-bottom: 35px;">
-                <svg class="decor-img decor-foliage" style="top:-75px; right:-20px; transform: rotate(-10deg); width:130px;" viewBox="-30 0 70 230">
-                    <use href="#foliage-branch"/>
-                </svg>
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-75px; right:-20px; transform: rotate(-10deg); width:130px;" alt="">
 
-                <p class="anim-fade-up" style="font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--text-deep); line-height: 1.5; margin-bottom: 30px;">
+                <p class="anim-fade-up" style="font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--text-deep); line-height: 1.5; margin-bottom: 30px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
                     Lo más importante para mí es que puedas celebrar este día tan especial conmigo. Pero si deseas hacerme un obsequio, te dejo la siguiente opción:
                 </p>
                 
@@ -560,8 +526,8 @@
                         <rect x="3" y="6" width="18" height="12" rx="2"></rect>
                         <path d="M3 6l9 6 9-6"></path>
                     </svg>
-                    <div class="regalo-pill">Lluvia de Sobres</div>
-                    <p class="regalo-subtext" style="margin-bottom: 0;">Es la tradición de regalar dinero en un sobre el día del evento, el cual podrás depositar en un buzón especial.</p>
+                    <div class="regalo-pill anim-fade-up">Lluvia de Sobres</div>
+                    <p class="regalo-subtext anim-fade-up" style="margin-bottom: 0;">Es la tradición de regalar dinero en un sobre el día del evento, el cual podrás depositar en un buzón especial.</p>
                 </div>
             </div>
 
@@ -585,14 +551,14 @@
             <div id="seccion-pases" class="anim-fade-up" style="display: none; width: 100%; max-width: 400px; margin: 0 auto 35px auto;">
                 <div class="ticket-pass">
                     <div class="ticket-inner">
-                        <svg viewBox="0 0 24 24" style="width: 45px; height: 45px; fill: var(--text-rose); margin-bottom: 10px; position:relative; z-index:2;">
+                        <svg class="anim-fade-up" viewBox="0 0 24 24" style="width: 45px; height: 45px; fill: var(--text-rose); margin-bottom: 10px; position:relative; z-index:2; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));">
                             <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.41l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.41zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
                         </svg>
-                        <div style="font-family:'Cinzel',serif;font-size:17px;color:#fff;letter-spacing:4px;text-transform:uppercase;margin-bottom:15px;font-weight:700;position:relative;z-index:2;">Pase de Acceso</div>
-                        <div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:rgba(255,255,255,0.95);font-style:italic;line-height:1.3;position:relative;z-index:2;">
+                        <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:17px;color:#fff;letter-spacing:4px;text-transform:uppercase;margin-bottom:15px;font-weight:700;position:relative;z-index:2; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Pase de Acceso</div>
+                        <div class="anim-fade-up" style="font-family:'Cormorant Garamond',serif;font-size:24px;color:rgba(255,255,255,0.95);font-style:italic;line-height:1.3;position:relative;z-index:2; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
                             Hemos reservado
-                            <div style="font-family:'Pinyon Script',cursive;font-size:90px;color:var(--text-rose);margin:5px 0;line-height:1;text-shadow: 0 4px 15px rgba(0,0,0,0.4);" id="numero-pases">1</div>
-                            <span id="texto-pases">pase en tu honor</span>
+                            <div class="anim-fade-up" style="font-family:'Pinyon Script',cursive;font-size:90px;color:var(--text-rose);margin:5px 0;line-height:1;text-shadow: 0 4px 15px rgba(0,0,0,0.8);" id="numero-pases">1</div>
+                            <span id="texto-pases" class="anim-fade-up">pase en tu honor</span>
                         </div>
                     </div>
                 </div>
@@ -642,9 +608,7 @@
                 </form>
             </div>
 
-            <svg class="decor-img decor-foliage anim-fade-up" style="bottom:10px; left:-30px; transform: rotate(15deg); width:140px;" viewBox="-30 0 70 230">
-                <use href="#foliage-branch"/>
-            </svg>
+            <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="bottom:10px; left:-30px; transform: rotate(15deg); width:140px;" alt="">
 
             <div class="divider-ornate anim-fade-up" style="margin-top:40px;"><div class="divider-ornate-diamond"></div></div>
             <div class="invitation-footer anim-fade-up">Invytia Premium</div>
@@ -657,63 +621,7 @@
         let envelopeOpened = false;
         const NUMERO_WHATSAPP = "524491961619";
 
-        /* ===== GLITTER MAGICO ===== */
-        const canvas = document.getElementById('glitter-canvas');
-        const ctx = canvas.getContext('2d');
-        let glitterParticles = [];
-
-        function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
-        resizeCanvas();
-        window.addEventListener('resize',resizeCanvas);
-
-        function makeParticle(x,y,burst){
-            return {
-                x,y,
-                vx:(Math.random()-0.5)*(burst?3.5:0.8),
-                vy:-Math.random()*(burst?3:0.8)-(burst?0.5:0.15),
-                size:Math.random()*(burst?3.5:2.5)+1.2,
-                life:burst?1:Math.random()*0.5+0.5,
-                decay:Math.random()*(burst?0.016:0.007)+0.005,
-                rotation:Math.random()*Math.PI*2,
-                rotSpeed:(Math.random()-0.5)*0.18,
-                color:Math.random()>0.5?'212,175,55':'255,255,255'
-            };
-        }
-        function createGlitterBurst(x,y){for(let i=0;i<20;i++)glitterParticles.push(makeParticle(x,y,true));}
-        function spawnAmbient(){
-            if(!document.body.classList.contains('content-active'))return;
-            const x=Math.random()*window.innerWidth;
-            const y=Math.random()*window.innerHeight*0.8+window.scrollY;
-            for(let i=0;i<2;i++)glitterParticles.push(makeParticle(x+(Math.random()-0.5)*80,y+(Math.random()-0.5)*80,false));
-        }
-        function drawGlitter(){
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            glitterParticles=glitterParticles.filter(p=>p.life>0);
-            for(const p of glitterParticles){
-                ctx.save();
-                ctx.translate(p.x,p.y-window.scrollY);
-                ctx.rotate(p.rotation);
-                ctx.globalAlpha=Math.min(p.life,0.95);
-                const s=p.size;
-                ctx.beginPath();
-                ctx.moveTo(0,-s*1.6);ctx.lineTo(s*0.45,-s*0.45);
-                ctx.lineTo(s*1.6,0);ctx.lineTo(s*0.45,s*0.45);
-                ctx.lineTo(0,s*1.6);ctx.lineTo(-s*0.45,s*0.45);
-                ctx.lineTo(-s*1.6,0);ctx.lineTo(-s*0.45,-s*0.45);
-                ctx.closePath();
-                ctx.fillStyle=`rgba(${p.color},${p.life*0.85})`; ctx.fill();
-                ctx.beginPath();ctx.arc(0,0,s*0.28,0,Math.PI*2);
-                ctx.fillStyle=`rgba(255,255,255,${p.life})`;ctx.fill();
-                ctx.restore();
-                p.x+=p.vx;p.y+=p.vy;
-                p.rotation+=p.rotSpeed;p.life-=p.decay;
-            }
-            requestAnimationFrame(drawGlitter);
-        }
-        function startGlitter(){canvas.classList.add('visible');drawGlitter();setInterval(spawnAmbient,350);}
-        document.addEventListener('click',e=>{if(document.body.classList.contains('content-active'))createGlitterBurst(e.clientX,e.clientY);});
-
-        /* ===== SCROLL OBSERVER ===== */
+        /* ===== SCROLL OBSERVER ====== */
         function initScrollAnimations(){
             const elements = document.querySelectorAll('.anim-fade-up');
             const observer = new IntersectionObserver((entries) => {
@@ -727,15 +635,21 @@
             elements.forEach(el => observer.observe(el));
         }
 
-        /* ===== ORBES MAGICOS (BOKEH) ===== */
-        function createBokeh(containerId, count){
-            const c=document.getElementById(containerId);
+        /* ===== ESTRELLAS NEÓN AZUL ===== */
+        function createNeonStars(containerId, count){
+            const c = document.getElementById(containerId);
             if(!c) return;
-            for(let i=0;i<count;i++){
-                const o=document.createElement('div'),w=Math.random()*40+20;
-                o.className='bokeh-orb';
-                o.style.cssText=`width:${w}px;height:${w}px;left:${Math.random()*100}%;bottom:${Math.random()*100}%;animation-duration:${Math.random()*6+6}s;animation-delay:${Math.random()*5}s;`;
-                c.appendChild(o);
+            for(let i=0; i<count; i++){
+                const star = document.createElement('div');
+                const size = Math.random() * 3 + 1; // Entre 1px y 4px
+                star.className = 'neon-star';
+                star.style.cssText = `
+                    width: ${size}px; height: ${size}px;
+                    left: ${Math.random()*100}%; top: ${Math.random()*100}%;
+                    animation-duration: ${Math.random()*3 + 1.5}s;
+                    animation-delay: ${Math.random()*3}s;
+                `;
+                c.appendChild(star);
             }
         }
 
@@ -768,17 +682,16 @@
             // 1. Abrimos las puertas del sobre
             envScreen.classList.add('open');
             
-            // 2. Transición hacia la invitación (dejamos unos segundos para ver la foto clara)
+            // 2. Transición hacia la invitación
             setTimeout(() => {
-                envScreen.style.display = 'none'; // Ocultamos el sobre por completo del DOM virtualmente
+                envScreen.style.display = 'none'; // Ocultamos el sobre del DOM virtualmente
                 
-                // 3. Activa la clase en el body que difumina el fondo y muestra la información
+                // 3. Activa la clase en el body que difumina el fondo inmersivo y muestra el contenido
                 document.body.classList.add('content-active');
                 if (musicBtn) musicBtn.classList.add('visible');
-                createBokeh('lanterns-container', 25);
-                startGlitter();
+                createNeonStars('neon-stars-container', 40);
                 initScrollAnimations();
-            }, 2500); // 2.5 segundos de pura foto clara antes de aplicar el bokeh y mostrar el texto
+            }, 2500); 
         }
 
         function toggleMusic(){
