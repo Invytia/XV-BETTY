@@ -9,9 +9,9 @@
         :root {
             /* Paleta: Azul Petróleo, Oro y Neón Azul */
             --bg-main: #020b12; /* Fondo profundo */
-            --bloque-bg: rgba(6, 32, 48, 0.65); /* Petróleo Transparente */
+            --bloque-bg: rgba(6, 32, 48, 0.5); /* Petróleo Transparente */
             --bloque-borde: rgba(0, 229, 255, 0.25); /* Borde sutil cyan */
-            --bloque-alt: rgba(10, 42, 60, 0.75); /* Petróleo alternativo */
+            --bloque-alt: rgba(10, 42, 60, 0.58); /* Petróleo alternativo */
             --text-deep: #e8f4f8; /* Blanco azulado suave para legibilidad */
             --text-rose: #d4af37; /* Oro verdadero */
             --text-turq: #81d4fa; /* Cyan claro / Azul hielo */
@@ -36,15 +36,23 @@
             position: fixed; inset: 0; z-index: 0;
             background-image: url('assets/galeria-1.jpg');
             background-size: cover; background-position: center;
-            /* La transición crea el efecto de pasar de nítido a bokeh oscuro */
+            /* La transición crea el efecto de pasar de nítido a un fondo suave pero visible */
             transition: filter 3s ease-in-out, transform 3s ease-in-out, opacity 3s ease-in-out;
         }
         
-        /* Cuando el contenido se activa, la imagen se difumina y oscurece profundamente */
+        /* Cuando el contenido se activa, la imagen se difumina levemente pero se mantiene visible detrás del contenido */
         body.content-active #main-bg {
-            filter: blur(20px) brightness(0.25);
+            filter: blur(10px) brightness(0.55) saturate(1.05);
             transform: scale(1.08);
         }
+
+        /* Capa de oscurecimiento independiente y suave, solo para mejorar el contraste del texto sin tapar la foto */
+        #bg-scrim {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background: linear-gradient(180deg, rgba(2,11,18,0.35) 0%, rgba(2,11,18,0.55) 100%);
+            opacity: 0; transition: opacity 2.5s ease-in-out;
+        }
+        body.content-active #bg-scrim { opacity: 1; }
 
         /* ====== ANIMACIONES GENERALES ====== */
         .anim-fade-up {
@@ -106,13 +114,14 @@
             100% { transform: scale(1.5); opacity: 0.9; box-shadow: 0 0 12px var(--neon-blue), 0 0 25px var(--neon-blue); }
         }
 
-        /* ====== DECORACIONES: FOLLAJE PNG ====== */
+        /* ====== DECORACIONES: FOLLAJE PNG (ancladas al borde superior de cada sección) ====== */
         .decor-img {
             position: absolute; pointer-events: none; z-index: 5; opacity: 0.85;
             filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6));
         }
         .decor-foliage { 
-            width: 140px; height: auto; 
+            width: 130px; height: auto; 
+            top: -28px;
             animation: sway-anim 7s ease-in-out infinite alternate; 
             transform-origin: top center; 
         }
@@ -138,9 +147,9 @@
         .invitation-frame {
             max-width:500px; width:100%; border:1px solid rgba(212,175,55,0.4);
             padding:60px 38px 50px; text-align:center; position:relative;
-            background: rgba(3, 19, 28, 0.65); /* Azul Petróleo muy oscuro y transparente */
+            background: rgba(3, 19, 28, 0.52); /* Azul Petróleo transparente, deja ver la foto de fondo */
             box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 229, 255, 0.1) inset;
-            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border-radius:6px; overflow:visible;
         }
 
@@ -179,7 +188,7 @@
         /* ====== BLOQUES VIDRIO ====== */
         .bloque-vidrio, .bloque-vidrio-alt {
             border-radius:10px; padding:35px 26px; margin:0 -38px; position:relative; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         }
         .bloque-vidrio { background:var(--bloque-bg); border:1px solid var(--bloque-borde); }
         .bloque-vidrio-alt { background:var(--bloque-alt); border:1px solid rgba(212,175,55,0.3); }
@@ -201,7 +210,7 @@
         }
         
         /* ====== CALENDARIO ===== */
-        .calendar-widget{ margin-top:18px; background:rgba(4, 25, 36, 0.6); border:1px solid rgba(0, 229, 255, 0.2); border-radius:18px; overflow:hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
+        .calendar-widget{ margin-top:18px; background:rgba(4, 25, 36, 0.55); border:1px solid rgba(0, 229, 255, 0.2); border-radius:18px; overflow:hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
         .calendar-header{ padding:18px 20px 14px; text-align:center; color: var(--text-deep); position:relative; }
         .calendar-header::after{ content:''; position:absolute; left:0; bottom:0; width:100%; height:1px; background:rgba(212,175,55,0.3); }
         .calendar-year{ font-family:'Cinzel',serif; font-size:11px; letter-spacing:5px; text-transform:uppercase; opacity:0.9; font-weight: 700;}
@@ -216,7 +225,7 @@
         
         .btn-accion {
             margin-top:18px; width:100%; border:1px solid rgba(212,175,55,0.5); border-radius:14px; padding:15px 18px;
-            background: rgba(10, 42, 60, 0.8); color:var(--text-deep); display:flex; align-items:center; justify-content:center; gap:10px;
+            background: rgba(10, 42, 60, 0.75); color:var(--text-deep); display:flex; align-items:center; justify-content:center; gap:10px;
             cursor:pointer; transition:.35s ease; font-family:'Cinzel',serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; font-weight:700; box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
         .btn-accion:hover { transform:translateY(-2px); background: #0a2a3c; box-shadow: 0 10px 25px rgba(0,0,0,0.6); border-color:var(--neon-blue); color:#fff; }
@@ -239,7 +248,7 @@
         .itin-left .itin-half:first-child { text-align:right; align-items:flex-end; padding-right:15px; }
         .itin-right .itin-half:first-child { text-align:left; align-items:flex-start; padding-left:15px; }
         
-        .itin-node { width:56px; height:56px; background: rgba(3, 19, 28, 0.9); border:2px solid var(--text-rose); border-radius:50%; display:flex; justify-content:center; align-items:center; z-index:2; box-shadow:0 0 20px rgba(212,175,55,0.3); backdrop-filter:blur(5px); }
+        .itin-node { width:56px; height:56px; background: rgba(3, 19, 28, 0.85); border:2px solid var(--text-rose); border-radius:50%; display:flex; justify-content:center; align-items:center; z-index:2; box-shadow:0 0 20px rgba(212,175,55,0.3); backdrop-filter:blur(5px); }
         .itin-node svg { width:28px; height:28px; fill:var(--text-rose); }
         
         .itin-hora { font-family:'Cinzel',serif; font-size:12px; font-weight:700; letter-spacing:1px; color:var(--text-turq); margin-bottom:5px; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
@@ -313,6 +322,7 @@
     </button>
 
     <div id="main-bg"></div>
+    <div id="bg-scrim"></div>
 
     <div id="envelope-screen" onclick="openEnvelope()">
         <div class="env-half left">
@@ -357,7 +367,7 @@
             <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
 
             <div class="bloque-vidrio anim-fade-up">
-                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="bottom:-25px; left:-35px; transform: rotate(-25deg); width:110px;" alt="">
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-28px; left:-30px; transform: rotate(-8deg); width:120px;" alt="">
 
                 <div class="section-heading anim-fade-up">Fecha</div>
                 <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:28px;font-weight:700;color:var(--text-rose);letter-spacing:3px; text-shadow: 0 2px 5px rgba(0,0,0,0.8);">09 · OCT · 2026</div>
@@ -386,7 +396,7 @@
             </div>
 
             <div class="info-block anim-fade-up" style="margin-top: 40px; position:relative;">
-                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-35px; right:-25px; animation-name: sway-anim-rev; width:100px;" alt="">
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-32px; right:-25px; animation-name: sway-anim-rev; width:110px;" alt="">
 
                 <div class="section-heading anim-fade-up" style="margin-bottom: 25px;">Ubicación</div>
                 
@@ -406,7 +416,7 @@
             <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
 
             <div class="bloque-vidrio anim-fade-up">
-                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:30%; right:-40px; transform: rotate(20deg); width:110px;" alt="">
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-28px; right:-30px; transform: rotate(10deg); width:120px;" alt="">
 
                 <div class="section-heading anim-fade-up">Itinerario</div>
                 <div class="itinerario-timeline" id="itinerario">
@@ -503,7 +513,7 @@
             </div>
 
             <div class="bloque-vidrio-alt anim-fade-up" style="margin-top: 40px;">
-                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="bottom:-20px; left:-25px; width: 100px;" alt="">
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-28px; left:-25px; transform: rotate(-6deg); width: 110px;" alt="">
 
                 <div class="section-heading anim-fade-up">Código de Vestimenta</div>
                 
@@ -515,7 +525,7 @@
             <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
 
             <div class="bloque-vidrio anim-fade-up" style="padding-bottom: 35px;">
-                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-75px; right:-20px; transform: rotate(-10deg); width:130px;" alt="">
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-28px; right:-25px; transform: rotate(8deg); width:120px;" alt="">
 
                 <p class="anim-fade-up" style="font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--text-deep); line-height: 1.5; margin-bottom: 30px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
                     Lo más importante para mí es que puedas celebrar este día tan especial conmigo. Pero si deseas hacerme un obsequio, te dejo la siguiente opción:
@@ -590,6 +600,8 @@
             <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
 
             <div class="bloque-vidrio anim-fade-up">
+                <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-28px; left:-28px; transform: rotate(-10deg); width:120px;" alt="">
+
                 <div class="section-heading anim-fade-up">Buenos Deseos</div>
                 <p class="rsvp-intro anim-fade-up">Deja un mensaje para Betty. Tu mensaje se guardará con cariño en esta nueva etapa.</p>
                 <form id="wish-form" style="text-align: left;" class="anim-fade-up">
@@ -607,8 +619,6 @@
                     </button>
                 </form>
             </div>
-
-            <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="bottom:10px; left:-30px; transform: rotate(15deg); width:140px;" alt="">
 
             <div class="divider-ornate anim-fade-up" style="margin-top:40px;"><div class="divider-ornate-diamond"></div></div>
             <div class="invitation-footer anim-fade-up">Invytia Premium</div>
