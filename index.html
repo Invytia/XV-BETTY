@@ -31,7 +31,7 @@
             scroll-behavior: smooth;
         }
 
-        /* ====== FONDO DE IMAGEN INMERSIVO ====== */
+        /* ====== FONDO DE IMAGEN INMERSIVO (MÁS VISIBLE) ====== */
         #main-bg {
             position: fixed; inset: 0; z-index: 0;
             background-image: url('assets/galeria-1.jpg');
@@ -41,16 +41,16 @@
             transition: filter 3.5s ease-out, transform 3.5s ease-out, opacity 3.5s ease-out;
         }
         
-        /* Cuando el contenido se activa, la imagen retrocede, se difumina suavemente y mantiene buen brillo */
+        /* Desenfocamos muy poco y mantenemos casi todo el brillo */
         body.content-active #main-bg {
-            filter: blur(6px) brightness(0.65) saturate(1.1);
+            filter: blur(3px) brightness(0.85) saturate(1.1);
             transform: scale(1);
         }
 
-        /* Capa de oscurecimiento independiente y suave */
+        /* Capa de oscurecimiento muy suave para ayudar a los textos */
         #bg-scrim {
             position: fixed; inset: 0; z-index: 0; pointer-events: none;
-            background: linear-gradient(180deg, rgba(2,11,18,0.2) 0%, rgba(2,11,18,0.45) 100%);
+            background: linear-gradient(180deg, rgba(2,11,18,0.15) 0%, rgba(2,11,18,0.35) 100%);
             opacity: 0; transition: opacity 3s ease-in-out;
         }
         body.content-active #bg-scrim { opacity: 1; }
@@ -94,7 +94,7 @@
         #envelope-screen.open .env-half.left { transform: translateX(-100%); }
         #envelope-screen.open .env-half.right { transform: translateX(100%); }
 
-        /* ====== ESTRELLAS NEÓN AZUL (MÁS VISIBLES Y GRANDES) ====== */
+        /* ====== ESTRELLAS NEÓN AZUL ====== */
         #neon-stars-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; pointer-events: none; z-index: 1; opacity: 0;
@@ -340,7 +340,6 @@
         <div class="invitation-frame" style="z-index:3;">
             
             <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-30px; right:-25px; transform: rotate(15deg);" alt="">
-            <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:2%; left:-25px; animation-name: sway-anim-rev;" alt="">
 
             <div class="frame-sparkle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.95"/></svg></div>
             <div class="frame-sparkle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.85"/></svg></div>
