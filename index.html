@@ -95,25 +95,33 @@
         #envelope-screen.open .env-half.left { transform: translateX(-100%); }
         #envelope-screen.open .env-half.right { transform: translateX(100%); }
 
-        /* ====== ESTRELLAS NEÓN AZUL ====== */
-        #neon-stars-container {
+        /* ====== LUCIÉRNAGAS AZULES ====== */
+        #firefly-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; pointer-events: none; z-index: 100; opacity: 0;
-            transition: opacity 2.5s ease-in;
+            overflow: hidden; pointer-events: none; z-index: 100; /* Z-index elevado para ir enfrente */
+            opacity: 0; transition: opacity 2.5s ease-in;
         }
-        body.content-active #neon-stars-container { opacity: 1; }
+        body.content-active #firefly-container { opacity: 1; }
 
-        .neon-star {
+        .firefly {
             position: absolute;
-            background: #ffffff; /* Núcleo blanco brillante */
+            bottom: -20px;
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+            background: radial-gradient(circle, rgba(160,225,255,1) 0%, var(--solid-blue) 45%, transparent 75%);
+            box-shadow: 0 0 8px 2px rgba(0,150,255,0.9), 0 0 18px 6px rgba(0,90,255,0.5);
             pointer-events: none;
-            animation: neonTwinkle infinite alternate ease-in-out;
+            animation-name: fireflyFloat;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
         }
-        @keyframes neonTwinkle {
-            0% { transform: scale(0.6); opacity: 0.4; box-shadow: 0 0 5px var(--neon-blue), 0 0 15px var(--neon-blue); }
-            100% { transform: scale(1.6); opacity: 1; box-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue), 0 0 45px #fff; }
+        @keyframes fireflyFloat {
+            0%   { transform: translate(0, 0) scale(0.6); opacity: 0; }
+            8%   { opacity: 1; }
+            30%  { transform: translate(calc(var(--drift) * 0.4), -35vh) scale(1); }
+            50%  { transform: translate(var(--drift), -60vh) scale(1.15); opacity: 0.85; }
+            70%  { transform: translate(calc(var(--drift) * 0.7), -85vh) scale(0.9); }
+            92%  { opacity: 0.5; }
+            100% { transform: translate(calc(var(--drift) * 1.3), -115vh) scale(0.5); opacity: 0; }
         }
 
         /* ====== DECORACIONES: FOLLAJE PNG ====== */
@@ -145,14 +153,15 @@
         }
         body.content-active #main-invitation { display: flex; opacity: 1; transform: translateY(0); }
 
-        /* ====== FRAME DE CRISTAL (GLASSMORPHISM PETRÓLEO) ====== */
+        /* ====== FRAME DE CRISTAL (GLASSMORPHISM PETRÓLEO — TRANSPARENCIA PROGRESIVA) ====== */
         .invitation-frame {
             max-width:500px; width:100%; border:1px solid rgba(212,175,55,0.4);
             padding:60px 38px 50px; text-align:center; position:relative;
-            background: rgba(3, 19, 28, 0.52);
+            background: rgba(3, 19, 28, 0.10);
             box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 229, 255, 0.1) inset;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
             border-radius:6px; overflow:visible;
+            transition: background 0.5s ease, backdrop-filter 0.5s ease, -webkit-backdrop-filter 0.5s ease;
         }
 
         /* ====== TIPOGRAFÍA ====== */
@@ -165,8 +174,8 @@
         .section-tag { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 16px; letter-spacing: 2px; color: var(--text-turq); font-weight: 500; margin-bottom: 14px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         
         .main-title { 
-            font-family:'Pinyon Script',cursive;font-size:98px;color: var(--text-rose); 
-            text-shadow: 0 4px 20px rgba(0,0,0,0.8), 0 0 15px rgba(212, 175, 55, 0.4);
+            font-family:'Pinyon Script',cursive;font-size:98px;color: var(--text-rose); /* Dorado */
+            text-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 15px rgba(212, 175, 55, 0.3); /* Sombra ajustada a dorado */
             margin-bottom:10px; line-height:1;
             transform: translateX(-10px); padding-right: 10px; text-align: center;
         }
@@ -222,7 +231,7 @@
         .calendar-day-name{ text-align:center; font-family:'Montserrat', sans-serif; font-size:9px; letter-spacing:1.5px; color:var(--text-turq); text-transform:uppercase; font-weight:700; }
         .calendar-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
         .cal-day{ width:34px; height:34px; margin:auto; display:flex; align-items:center; justify-content:center; font-family: 'Cormorant Garamond', serif; font-size:18px; color:var(--text-deep); position:relative; border-radius:50%; transition:all .3s ease; font-weight:600;}
-        .cal-day.empty{ opacity:0; pointer-events: none;}
+        .cal-day.empty{ opacity:0; }
         .cal-day.highlight{ border: 1px solid var(--neon-blue); color:#000; font-weight:700; background:var(--text-rose); box-shadow: 0 0 15px rgba(212,175,55, 0.4);}
         
         .btn-accion {
@@ -313,12 +322,6 @@
             .main-title{font-size:82px}
             .invitation-frame{padding:45px 22px 35px}
             .bloque-vidrio,.bloque-vidrio-alt{margin:0 -22px; padding: 25px 20px;}
-            
-            /* Correcciones para calendario en pantallas chicas (Android) */
-            .calendar-body { padding: 15px 8px 18px; }
-            .calendar-grid { gap: 4px 2px; }
-            .cal-day { width: 28px; height: 28px; font-size: 15px; }
-            .calendar-day-name { letter-spacing: 0.5px; font-size: 8px; }
         }
     </style>
 </head>
@@ -341,13 +344,12 @@
         </div>
     </div>
 
-    <div id="neon-stars-container"></div>
+    <div id="firefly-container"></div>
 
     <main id="main-invitation">
         <div class="invitation-frame" style="z-index:3;">
             
             <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:-30px; right:-25px; transform: rotate(15deg);" alt="">
-            <img src="assets/follaje.png" class="decor-img decor-foliage anim-fade-up" style="top:2%; left:-25px; animation-name: sway-anim-rev;" alt="">
 
             <div class="frame-sparkle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.95"/></svg></div>
             <div class="frame-sparkle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.85"/></svg></div>
@@ -584,7 +586,7 @@
 
             <div class="bloque-vidrio-alt anim-fade-up">
                 <div class="section-heading anim-fade-up">Confirmación</div>
-                <p class="rsvp-intro anim-fade-up" style="margin-bottom: 10px;">Por favor confírmame tu asistencia, será un honor contar con tu presencia.</p>
+                <p class="rsvp-intro anim-fade-up">Por favor confírmame tu asistencia, será un honor contar con tu presencia.</p>
                 <p class="anim-fade-up" style="font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:600; font-style:italic; color:var(--text-rose); line-height:1.6; margin-bottom:25px; text-shadow: 0 2px 4px rgba(0,0,0,0.6);">Fecha límite: 20 de Septiembre</p>
                 
                 <div class="rsvp-input-wrap anim-fade-up">
@@ -654,23 +656,48 @@
             elements.forEach(el => observer.observe(el));
         }
 
-        /* ===== ESTRELLAS NEÓN AZUL ===== */
-        function createNeonStars(containerId, count){
+        /* ===== LUCIÉRNAGAS AZULES FLOTANTES ===== */
+        function createFireflies(containerId, count){
             const c = document.getElementById(containerId);
             if(!c) return;
             for(let i=0; i<count; i++){
-                const star = document.createElement('div');
-                const size = Math.random() * 4 + 2; /* 2px a 6px */
-                star.className = 'neon-star';
-                star.style.cssText = `
+                const fly = document.createElement('div');
+                const size = Math.random() * 3 + 2.5; /* 2.5px a 5.5px */
+                const drift = (Math.random() * 160 - 80) + 'px'; /* deriva horizontal -80 a 80px */
+                const duration = Math.random() * 8 + 7; /* 7s a 15s */
+                const delay = Math.random() * 12;
+                fly.className = 'firefly';
+                fly.style.cssText = `
                     width: ${size}px; height: ${size}px;
-                    left: ${Math.random()*100}%; top: ${Math.random()*100}%;
-                    animation-duration: ${Math.random()*3 + 1.5}s;
-                    animation-delay: ${Math.random()*3}s;
+                    left: ${Math.random()*100}%;
+                    --drift: ${drift};
+                    animation-duration: ${duration}s;
+                    animation-delay: -${delay}s;
                 `;
-                c.appendChild(star);
+                c.appendChild(fly);
             }
         }
+
+        /* ===== TRANSPARENCIA PROGRESIVA DEL CUERPO ===== */
+        function updateFrameTransparency(){
+            const frame = document.querySelector('.invitation-frame');
+            if(!frame) return;
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? Math.min(Math.max(scrollTop / docHeight, 0), 1) : 1;
+
+            const minAlpha = 0.10, maxAlpha = 0.62; /* casi transparente -> opaco */
+            const minBlur = 2, maxBlur = 10;
+
+            const alpha = minAlpha + (maxAlpha - minAlpha) * progress;
+            const blur = minBlur + (maxBlur - minBlur) * progress;
+
+            frame.style.background = `rgba(3, 19, 28, ${alpha.toFixed(3)})`;
+            frame.style.backdropFilter = `blur(${blur.toFixed(1)}px)`;
+            frame.style.webkitBackdropFilter = `blur(${blur.toFixed(1)}px)`;
+        }
+        window.addEventListener('scroll', updateFrameTransparency, { passive: true });
+        window.addEventListener('resize', updateFrameTransparency);
 
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -685,6 +712,8 @@
                     document.getElementById('texto-pases').innerText = pasesAsignados === 1 ? 'pase en tu honor' : 'pases en tu honor';
                 }
             }
+
+            updateFrameTransparency();
         });
 
         /* ====== SECUENCIA DE APERTURA ====== */
@@ -711,8 +740,9 @@
                 
                 document.body.classList.add('content-active');
                 if (musicBtn) musicBtn.classList.add('visible');
-                createNeonStars('neon-stars-container', 60);
+                createFireflies('firefly-container', 45);
                 initScrollAnimations();
+                updateFrameTransparency();
             }, 2800); 
         }
 
