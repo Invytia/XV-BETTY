@@ -220,19 +220,35 @@
             background: rgba(0,0,0,0.4); position: relative; text-align: center;
         }
         
-        /* ====== CALENDARIO ===== */
-        .calendar-widget{ margin-top:18px; background:rgba(4, 25, 36, 0.55); border:1px solid rgba(0, 229, 255, 0.2); border-radius:18px; overflow:hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
-        .calendar-header{ padding:18px 20px 14px; text-align:center; color: var(--text-deep); position:relative; }
-        .calendar-header::after{ content:''; position:absolute; left:0; bottom:0; width:100%; height:1px; background:rgba(212,175,55,0.3); }
-        .calendar-year{ font-family:'Cinzel',serif; font-size:11px; letter-spacing:5px; text-transform:uppercase; opacity:0.9; font-weight: 700;}
-        .calendar-month{ margin-top:5px; font-family: 'Pinyon Script', cursive; font-size:42px; font-weight:400; letter-spacing:1px; color:var(--text-rose); }
-        .calendar-body{ padding:18px 16px 20px; }
-        .calendar-days-header{ display:grid; grid-template-columns:repeat(7,1fr); margin-bottom:12px; }
-        .calendar-day-name{ text-align:center; font-family:'Montserrat', sans-serif; font-size:9px; letter-spacing:1.5px; color:var(--text-turq); text-transform:uppercase; font-weight:700; }
-        .calendar-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
-        .cal-day{ width:34px; height:34px; margin:auto; display:flex; align-items:center; justify-content:center; font-family: 'Cormorant Garamond', serif; font-size:18px; color:var(--text-deep); position:relative; border-radius:50%; transition:all .3s ease; font-weight:600;}
-        .cal-day.empty{ opacity:0; }
-        .cal-day.highlight{ border: 1px solid var(--neon-blue); color:#000; font-weight:700; background:var(--text-rose); box-shadow: 0 0 15px rgba(212,175,55, 0.4);}
+        /* ====== CALENDARIO ====== */
+        .calendar-widget { 
+            margin-top:18px; background:rgba(4, 25, 36, 0.55); border:1px solid rgba(0, 229, 255, 0.2); 
+            border-radius:18px; overflow:hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
+            width: 100%; max-width: 320px; margin-left: auto; margin-right: auto;
+        }
+        .calendar-header { padding:18px 20px 14px; text-align:center; color: var(--text-deep); position:relative; }
+        .calendar-header::after { content:''; position:absolute; left:0; bottom:0; width:100%; height:1px; background:rgba(212,175,55,0.3); }
+        .calendar-year { font-family:'Cinzel',serif; font-size:11px; letter-spacing:5px; text-transform:uppercase; opacity:0.9; font-weight: 700;}
+        .calendar-month { margin-top:5px; font-family: 'Pinyon Script', cursive; font-size:42px; font-weight:400; letter-spacing:1px; color:var(--text-rose); }
+        .calendar-body { padding:18px 12px 20px; }
+        
+        .calendar-days-header { 
+            display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); 
+            margin-bottom:12px; width: 100%;
+        }
+        .calendar-day-name { text-align:center; font-family:'Montserrat', sans-serif; font-size:9px; letter-spacing:0px; color:var(--text-turq); text-transform:uppercase; font-weight:700; }
+        
+        .calendar-grid { 
+            display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); 
+            gap:8px 0px; justify-items: center; width: 100%;
+        }
+        .cal-day { 
+            width:30px; height:30px; display:flex; align-items:center; justify-content:center; 
+            font-family: 'Cormorant Garamond', serif; font-size:16px; color:var(--text-deep); 
+            position:relative; border-radius:50%; transition:all .3s ease; font-weight:600;
+        }
+        .cal-day.empty { opacity:0; pointer-events: none;}
+        .cal-day.highlight { border: 1px solid var(--neon-blue); color:#000; font-weight:700; background:var(--text-rose); box-shadow: 0 0 15px rgba(212,175,55, 0.4);}
         
         .btn-accion {
             margin-top:18px; width:100%; border:1px solid rgba(212,175,55,0.5); border-radius:14px; padding:15px 18px;
@@ -586,7 +602,7 @@
 
             <div class="bloque-vidrio-alt anim-fade-up">
                 <div class="section-heading anim-fade-up">Confirmación</div>
-                <p class="rsvp-intro anim-fade-up">Por favor confírmame tu asistencia, será un honor contar con tu presencia.</p>
+                <p class="rsvp-intro anim-fade-up" style="margin-bottom: 10px;">Por favor confírmame tu asistencia, será un honor contar con tu presencia.</p>
                 <p class="anim-fade-up" style="font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:600; font-style:italic; color:var(--text-rose); line-height:1.6; margin-bottom:25px; text-shadow: 0 2px 4px rgba(0,0,0,0.6);">Fecha límite: 20 de Septiembre</p>
                 
                 <div class="rsvp-input-wrap anim-fade-up">
